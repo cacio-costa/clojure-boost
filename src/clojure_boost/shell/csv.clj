@@ -20,6 +20,15 @@
   (mapv #(%1 %2) conversoes registro))
 
 
+(defn- atribui-ids [compras]
+  (reduce (fn [vetor-final compra]
+            (->> (compra/novo-id vetor-final)
+                 (assoc compra :id)
+                 (conj vetor-final)))
+          []
+          compras))
+
+
 (defn lista-compras []
   (->> "compras.csv"
        slurp
@@ -27,5 +36,6 @@
        rest
        (map #(clojure.string/split % #","))
        (mapv #(converte-valores-do-registro % conversoes-de-compra))
-       (mapv compra/nova-compra)))
+       (mapv #(apply (partial compra/->Compra nil) %))
+       atribui-ids))
 
