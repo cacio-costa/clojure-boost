@@ -1,12 +1,16 @@
 (ns clojure-boost.core.compra
-  (:require [clojure-boost.core.datas :as dt]))
+  (:require [schema.core :as s]
+            [clojure-boost.core.datas :as dt]
+            [clojure-boost.core.contratos :as contratos]))
 
-(defrecord Compra [id
-                   data
-                   valor
-                   estabelecimento
-                   categoria
-                   cartao])
+(s/defn nova-compra :- contratos/Compra
+  [id data valor estabelecimento categoria cartao]
+  {:id              id
+   :data            data
+   :valor           valor
+   :estabelecimento estabelecimento
+   :categoria       categoria
+   :cartao          cartao})
 
 
 (defn novo-id [entidades]
@@ -56,33 +60,3 @@
   (->> todas-as-compras
        (remove #(= id (:id %)))
        vec))
-
-
-(defn- data-valida? [{:keys [data]}]
-  (and (some? data)
-       (not (dt/maior-que-hoje? data))))
-
-
-(defn- valor-valido? [{:keys [valor]}]
-  (and (some? valor)
-       (pos? valor)
-       (decimal? valor)))
-
-
-(defn- estabelecimento-valido? [{:keys [estabelecimento]}]
-  (and (string? estabelecimento)
-       (-> estabelecimento
-           count
-           (>= 2))))
-
-
-(defn- categoria-valida? [{:keys [categoria]}]
-  (contains? #{"Alimentação" "Automóvel" "Casa" "Educação" "Lazer" "Saúde"}
-             categoria))
-
-
-(defn valida-compra [compra]
-  (and (data-valida? compra)
-       (valor-valido? compra)
-       (estabelecimento-valido? compra)
-       (categoria-valida? compra)))

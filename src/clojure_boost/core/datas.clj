@@ -2,27 +2,6 @@
   (:require [java-time.api :as jt]))
 
 
-;(defmulti mes-da-data #())
-;(defmulti ano-da-data #())
-;(defmulti dia-da-data #())
-
-;(defmulti mes-da-data (fn [data]
-;                        (class data)))
-;
-;(defmethod mes-da-data java.lang.String
-;  [data]
-;  (-> data
-;      (clojure.string/split #"-")
-;      second
-;      Integer/valueOf))
-;
-;
-;(defmethod mes-da-data java.time.LocalDate
-;  [data]
-;  (-> data
-;      jt/month
-;      .getValue))
-
 (defprotocol PegaMes
   (mes-da-data [data]))
 

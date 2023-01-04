@@ -2,7 +2,7 @@
   (:require [clojure-boost.core.compra :as compra]
             [java-time.api :as jt]))
 
-
+(schema.core/set-fn-validation! true)
 (defn cartao-str->long [string-do-cartao]
   (-> string-do-cartao
       (clojure.string/replace " " "")
@@ -29,13 +29,16 @@
           compras))
 
 
-(defn lista-compras []
+(def ^:private compra-com-id-nil (partial compra/nova-compra nil))
+
+
+(defn lista-compras! []
   (->> "compras.csv"
        slurp
        clojure.string/split-lines
        rest
        (map #(clojure.string/split % #","))
        (mapv #(converte-valores-do-registro % conversoes-de-compra))
-       (mapv #(apply (partial compra/->Compra nil) %))
+       (mapv #(apply compra-com-id-nil %))
        atribui-ids))
 
